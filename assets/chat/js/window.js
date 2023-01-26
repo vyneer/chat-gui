@@ -49,6 +49,9 @@ class ChatWindow extends EventEmitter {
       this.lines,
       this.lines.parentElement
     );
+    window.addEventListener('resize', () => {
+      this.scrollplugin.updateAndPin(this.waspinned);
+    });
     this.tag =
       chat.taggednicks.get(normalized) ||
       tagcolors[Math.floor(Math.random() * tagcolors.length)];
