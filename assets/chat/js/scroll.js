@@ -14,13 +14,14 @@ class ChatScrollPlugin {
 
     this.previousPosition = 0;
 
-    const targetEl = target !== undefined ? $(target) : $(viewport);
+    const targetEl = target ? $(target) : $(viewport);
 
     this.scroller = OverlayScrollbars(
       {
         target: targetEl.get(0),
         elements: {
           viewport: this.viewportEl,
+          padding: false,
         },
       },
       {
@@ -29,9 +30,18 @@ class ChatScrollPlugin {
           autoHide: isTouchDevice ? 'never' : 'move',
           autoHideDelay: 1000,
         },
+        update: {
+          elementEvents: false,
+          debounce: [20, 100],
+          ignoreMutation: (record) => {
+            if (record.type === 'childList' && record.addedNodes.length > 0) {
+              return false;
+            }
+            return true;
+          },
+        },
       }
     );
-    this.viewport = this.scroller.elements().viewport;
     if (targetEl.find('.chat-scroll-notify').length > 0) {
       this.scroller.on('scroll', () => {
         const direction = this.getScrollDirection();
@@ -59,7 +69,7 @@ class ChatScrollPlugin {
 
   isPinned() {
     // 30 is used to allow the scrollbar to be just offset, but still count as scrolled to bottom
-    const { scrollTop, scrollHeight, clientHeight } = this.viewport;
+    const { scrollTop, scrollHeight, clientHeight } = this.viewportEl;
     return scrollTop >= scrollHeight - clientHeight - 30;
   }
 
@@ -68,7 +78,7 @@ class ChatScrollPlugin {
   }
 
   scrollBottom() {
-    this.viewport.scrollTo(0, this.viewport.scrollHeight);
+    this.viewportEl.scrollTo(0, this.viewportEl.scrollHeight);
   }
 
   reset() {
