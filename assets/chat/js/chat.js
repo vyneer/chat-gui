@@ -321,7 +321,7 @@ class Chat {
     return this;
   }
 
-  setSettings(settings) {
+  setSettings(settings, nick = null) {
     // If authed and #settings.profilesettings=true use #settings
     // Else use whats in LocalStorage#chat.settings
     const stored =
@@ -349,7 +349,7 @@ class Chat {
     this.taggednicks = new Map(this.settings.get('taggednicks'));
     this.taggednotes = new Map(this.settings.get('taggednotes'));
     this.ignoring = new Set(this.settings.get('ignorenicks'));
-    return this.applySettings(false);
+    return this.applySettings(false, nick);
   }
 
   withGui(template, appendTo = null) {
@@ -583,13 +583,13 @@ class Chat {
   }
 
   async loadSettings() {
-    fetch(`${this.config.api.base}/api/chat/me/settings`, {
+    fetch(`${this.config.api.base}/api/chat/me`, {
       credentials: 'include',
     })
       .then((res) => res.json())
       .then((data) => {
         // Set user settings.
-        this.setSettings(new Map(data));
+        this.setSettings(new Map(data.settings), data.nick);
         this.getActiveWindow().update(true);
       })
       .catch(() => {
@@ -715,8 +715,10 @@ class Chat {
   }
 
   // Save settings if save=true then apply current settings to chat
-  applySettings(save = true) {
+  applySettings(save = true, nick = null) {
     if (save) this.saveSettings();
+
+    const usedNick = nick ?? this.user.nick;
 
     // Formats
     DATE_FORMATS.TIME = this.settings.get('timestampformat');
@@ -735,8 +737,8 @@ class Chat {
     const nicks = [...(this.settings.get('highlightnicks') || [])].filter(
       (a) => a !== ''
     );
-    this.regexhighlightself = this.user.nick
-      ? new RegExp(`\\b(?:${this.user.nick})\\b`, 'i')
+    this.regexhighlightself = usedNick
+      ? new RegExp(`\\b(?:${usedNick})\\b`, 'i')
       : null;
     this.regexhighlightcustom =
       cust.length > 0 ? new RegExp(`\\b(?:${cust.join('|')})\\b`, 'i') : null;
