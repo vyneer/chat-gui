@@ -432,7 +432,7 @@ class Chat {
     );
 
     this.commands
-      .generateAutocomplete(this.user.hasModPowers())
+      .generateAutocomplete()
       .forEach((command) => this.autocomplete.add(command));
     this.autocomplete.bind(this);
 
@@ -1118,7 +1118,13 @@ class Chat {
 
   onME(data) {
     this.setUser(data);
-    if (data) this.loadWhispers();
+    if (data) {
+      this.loadWhispers();
+      if (this.user.hasModPowers())
+        this.commands
+          .generateAutocomplete(true)
+          .forEach((command) => this.autocomplete.add(command));
+    }
   }
 
   onOPEN() {

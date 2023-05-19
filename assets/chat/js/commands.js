@@ -180,8 +180,8 @@ export default class ChatCommands {
    * @param {boolean} [admin]
    * @returns {string[]}
    */
-  generateAutocomplete(admin = null) {
-    return CHAT_COMMANDS.filter((command) => admin || !command.admin)
+  generateAutocomplete(admin = false) {
+    return CHAT_COMMANDS.filter((command) => command.admin === admin)
       .map((command) => [
         `/${command.name}`,
         ...(command.alias || []).map((alias) => `/${alias}`),
