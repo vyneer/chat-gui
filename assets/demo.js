@@ -51,6 +51,7 @@ switch ((Chat.reqParam('t') || 'embed').toUpperCase()) {
   default:
     chat
       .withGui(embedHtml)
+      .then(() => chat.loadSettings())
       .then(() => chat.loadEmotesAndFlairs())
       .then(() => chat.loadHistory())
       .then(() => chat.connect());
