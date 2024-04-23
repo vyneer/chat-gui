@@ -25,7 +25,6 @@ $gutter-lg: 0.9em;
 
 $bradius: 0.25em;
 
-html,
 body {
   position: relative;
   color: $text-color1;
@@ -1763,6 +1762,9 @@ hr {
   span.user {
     animation: none !important;
   }
+}
+body.pref-topembeds .top-embeds-list {
+  display: none;
 }
 
 /* OverlayScrollbars theme */

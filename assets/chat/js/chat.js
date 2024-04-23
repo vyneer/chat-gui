@@ -703,6 +703,12 @@ class Chat {
     $(document.body).toggleClass(`pref-fontscale`, fontscale !== 'auto');
     $(document.body).attr('data-fontscale', fontscale);
 
+    // Top Embeds
+    document.body.classList.toggle(
+      'pref-topembeds',
+      this.settings.get('topembeds'),
+    );
+
     for (const window of this.windows.values()) {
       window.updateMessages(this);
     }
